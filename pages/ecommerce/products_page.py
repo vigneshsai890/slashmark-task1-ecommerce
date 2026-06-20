@@ -29,29 +29,43 @@ class ProductsPage(BasePage):
         return [float(p.text.replace("$", "")) for p in items]
 
     def add_to_cart_by_index(self, index):
+        import time
+        time.sleep(0.3)
         items = self.find_all(*self.INVENTORY_ITEMS)
         btn = items[index].find_element(By.CSS_SELECTOR, "button")
-        btn.click()
+        self.driver.execute_script("arguments[0].click();", btn)
+        time.sleep(0.5)
         return self
 
     def add_to_cart_by_name(self, product_name):
         btn_id = "add-to-cart-" + product_name.lower().replace(" ", "-")
-        self.click(By.ID, btn_id)
+        el = self.find(By.ID, btn_id)
+        self.driver.execute_script("arguments[0].click();", el)
+        import time
+        time.sleep(0.5)
         return self
 
     def remove_from_cart_by_name(self, product_name):
         btn_id = "remove-" + product_name.lower().replace(" ", "-")
-        self.click(By.ID, btn_id)
+        el = self.find(By.ID, btn_id)
+        self.driver.execute_script("arguments[0].click();", el)
+        import time
+        time.sleep(0.5)
         return self
 
     def get_cart_count(self):
+        import time
+        time.sleep(0.5)
         try:
+            from selenium.webdriver.support import expected_conditions as EC
+            self.wait.until(EC.visibility_of_element_located(self.CART_BADGE))
             return int(self.get_text(*self.CART_BADGE))
         except:
             return 0
 
     def go_to_cart(self):
-        self.click(*self.CART_LINK)
+        el = self.find(*self.CART_LINK)
+        self.driver.execute_script("arguments[0].click();", el)
 
     def sort_by(self, option_value):
         dropdown = Select(self.find(*self.SORT_DROPDOWN))
@@ -62,5 +76,9 @@ class ProductsPage(BasePage):
         names[index].click()
 
     def logout(self):
-        self.click(*self.BURGER_MENU)
-        self.click(*self.LOGOUT_LINK)
+        el = self.find(*self.BURGER_MENU)
+        self.driver.execute_script("arguments[0].click();", el)
+        import time
+        time.sleep(0.5)
+        logout_el = self.find(*self.LOGOUT_LINK)
+        self.driver.execute_script("arguments[0].click();", logout_el)

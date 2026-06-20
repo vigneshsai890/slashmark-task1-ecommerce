@@ -17,8 +17,9 @@ class TestCart:
         assert self.products.get_cart_count() == 1
 
     def test_add_multiple_items(self, driver):
-        for i in range(3):
-            self.products.add_to_cart_by_index(i)
+        self.products.add_to_cart_by_name("sauce-labs-backpack")
+        self.products.add_to_cart_by_name("sauce-labs-bike-light")
+        self.products.add_to_cart_by_name("sauce-labs-bolt-t-shirt")
         assert self.products.get_cart_count() == 3
 
     def test_remove_item_from_products_page(self, driver):

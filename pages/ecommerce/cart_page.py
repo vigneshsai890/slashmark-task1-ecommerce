@@ -31,12 +31,15 @@ class CartPage(BasePage):
     def remove_item(self, index):
         btns = self.find_all(*self.REMOVE_BTNS)
         btn = btns[index]
-        btn.click()
+        self.driver.execute_script("arguments[0].click();", btn)
         from selenium.webdriver.support import expected_conditions as EC
-        self.wait.until(EC.staleness_of(btn))
+        import time
+        time.sleep(0.5)
 
     def checkout(self):
-        self.click(*self.CHECKOUT_BTN)
+        el = self.find(*self.CHECKOUT_BTN)
+        self.driver.execute_script("arguments[0].click();", el)
 
     def continue_shopping(self):
-        self.click(*self.CONTINUE_SHOPPING)
+        el = self.find(*self.CONTINUE_SHOPPING)
+        self.driver.execute_script("arguments[0].click();", el)

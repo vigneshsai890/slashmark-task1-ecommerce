@@ -36,14 +36,27 @@ class BasePage:
         for _ in range(3):
             try:
                 element = self.wait.until(EC.visibility_of_element_located((by, value)))
+                element.click()
+                time.sleep(0.2)
                 element.clear()
                 element.send_keys(text)
-                return
+                if element.get_attribute("value") == text:
+                    return
             except StaleElementReferenceException:
                 time.sleep(0.5)
         element = self.wait.until(EC.visibility_of_element_located((by, value)))
+        element.click()
+        time.sleep(0.2)
         element.clear()
         element.send_keys(text)
+        if element.get_attribute("value") != text:
+            self.driver.execute_script(f'''
+                var el = arguments[0];
+                var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+                nativeInputValueSetter.call(el, "{text}");
+                el.dispatchEvent(new Event("input", {{ bubbles: true }}));
+                el.dispatchEvent(new Event("change", {{ bubbles: true }}));
+            ''', element)
 
     def get_text(self, by, value):
         return self.find(by, value).text

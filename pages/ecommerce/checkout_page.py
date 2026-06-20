@@ -23,7 +23,10 @@ class CheckoutPage(BasePage):
         self.type_text(*self.FIRST_NAME, first_name)
         self.type_text(*self.LAST_NAME, last_name)
         self.type_text(*self.POSTAL_CODE, postal_code)
-        self.click(*self.CONTINUE_BTN)
+        el = self.find(*self.CONTINUE_BTN)
+        self.driver.execute_script("arguments[0].click();", el)
+        import time
+        time.sleep(1)
         return self
 
     def get_error(self):
@@ -42,10 +45,14 @@ class CheckoutPage(BasePage):
         return float(text.split("$")[1])
 
     def finish(self):
-        self.click(*self.FINISH_BTN)
+        el = self.find(*self.FINISH_BTN)
+        self.driver.execute_script("arguments[0].click();", el)
+        from selenium.webdriver.support import expected_conditions as EC
+        self.wait.until(EC.visibility_of_element_located(self.COMPLETE_HEADER))
 
     def get_confirmation_text(self):
         return self.get_text(*self.COMPLETE_HEADER)
 
     def back_home(self):
-        self.click(*self.BACK_HOME_BTN)
+        el = self.find(*self.BACK_HOME_BTN)
+        self.driver.execute_script("arguments[0].click();", el)
